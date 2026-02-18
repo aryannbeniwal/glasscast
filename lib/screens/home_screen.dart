@@ -1,6 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'city_search_screen.dart';
+import 'settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -48,7 +50,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     IconButton(
                       onPressed: () {
-                        // TODO: Implement search
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const CitySearchScreen(),
+                          ),
+                        );
                       },
                       icon: const Icon(
                         Icons.search,
@@ -103,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       // Horizontal Forecast List
                       SizedBox(
-                        height: 140,
+                        height: 180,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: 5,
@@ -160,6 +167,26 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       bottomNavigationBar: _buildBottomNavigationBar(),
     );
+  }
+
+  void _onNavigationTap(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    if (index == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const SettingsScreen(),
+        ),
+      ).then((_) {
+        // Reset to home tab when returning from settings
+        setState(() {
+          _selectedIndex = 0;
+        });
+      });
+    }
   }
 
   Widget _buildMainWeatherWidget() {
@@ -460,12 +487,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       child: BottomNavigationBar(
         currentIndex: _selectedIndex,
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-          // TODO: Navigate to settings screen when index == 1
-        },
+        onTap: _onNavigationTap,
         backgroundColor: Colors.transparent,
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white.withOpacity(0.5),
